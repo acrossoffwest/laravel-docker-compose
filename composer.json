@@ -3,7 +3,6 @@
     "description": "The short runner for docker-compose",
     "keywords": ["framework", "laravel", "laravel zero", "console", "cli", "docker-compose"],
     "homepage": "https://github.com/acrossoffwest/laravel-docker-compose",
-    "type": "project",
     "license": "MIT",
     "support": {
         "issues": "https://github.com/acrossoffwest/laravel-docker-compose/issues",
