@@ -42,7 +42,7 @@
             "@php application app:rename"
         ]
     },
-    "minimum-stability": "0.0.1",
+    "minimum-stability": "stable",
     "prefer-stable": true,
     "bin": ["builds/ldc"]
 }
