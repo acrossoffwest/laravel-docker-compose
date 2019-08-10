@@ -45,5 +45,5 @@
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
-    "bin": ["laravel-docker-compose-runner"]
+    "bin": ["builds/ldc"]
 }
