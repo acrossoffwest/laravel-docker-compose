@@ -1,18 +1,18 @@
 {
-    "name": "laravel-zero/laravel-zero",
-    "description": "The Laravel Zero Framework.",
-    "keywords": ["framework", "laravel", "laravel zero", "console", "cli"],
-    "homepage": "https://laravel-zero.com",
+    "name": "acrossoffwest/laravel-docker-compose",
+    "description": "The short runner for docker-compose",
+    "keywords": ["framework", "laravel", "laravel zero", "console", "cli", "docker-compose"],
+    "homepage": "https://github.com/acrossoffwest/laravel-docker-compose",
     "type": "project",
     "license": "MIT",
     "support": {
-        "issues": "https://github.com/laravel-zero/laravel-zero/issues",
-        "source": "https://github.com/laravel-zero/laravel-zero"
+        "issues": "https://github.com/acrossoffwest/laravel-docker-compose/issues",
+        "source": "https://github.com/acrossoffwest/laravel-docker-compose"
     },
     "authors": [
         {
-            "name": "Nuno Maduro",
-            "email": "enunomaduro@gmail.com"
+            "name": "Iurii Karpov",
+            "email": "acrossoffwest@gmail.com"
         }
     ],
     "require": {
