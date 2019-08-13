@@ -25,3 +25,9 @@ It's like
 And run `docker-compose {some command}`
 
     lcdr cmd {some command}
+
+Restart `docker-compose kill {container?} && docker-compose up -d  {container?}`
+
+    lcdr restart {container?}
+    
+`container` - optional argument, container name. If container empty then will be restart all containers.
