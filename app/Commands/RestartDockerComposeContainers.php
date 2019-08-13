@@ -12,7 +12,7 @@ class RestartDockerComposeContainers extends RunCLICommandInDockerPath
      *
      * @var string
      */
-    protected $signature = 'restart {container}';
+    protected $signature = 'restart {container?}';
 
     /**
      * The description of the command.
