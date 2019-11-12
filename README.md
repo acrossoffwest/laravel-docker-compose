@@ -1,4 +1,8 @@
 # Laravel Docker-Compose
+##### Installation
+
+    composer global require acrossoffwest/laravel-docker-compose
+
 ##### Run docker-compose command from base path of Laravel project
 
 The docker-compose files should be in directory: ./docker
