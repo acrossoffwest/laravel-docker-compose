@@ -7,7 +7,7 @@ Example:
 
 Run `docker-compose up -d`
 
-    lcdr run
+    ldc run
     
 It's like
 
@@ -15,7 +15,7 @@ It's like
     
 Run `docker-compose kill`    
     
-    lcdr kill
+    ldc kill
     
 It's like
 
@@ -24,10 +24,10 @@ It's like
 
 And run `docker-compose {some command}`
 
-    lcdr cmd {some command}
+    ldc cmd {some command}
 
 Restart `docker-compose kill {container?} && docker-compose up -d  {container?}`
 
-    lcdr restart {container?}
+    ldc restart {container?}
     
 `container` - optional argument, container name. If container empty then will be restart all containers.
