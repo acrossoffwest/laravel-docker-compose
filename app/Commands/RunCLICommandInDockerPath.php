@@ -7,9 +7,11 @@ use LaravelZero\Framework\Commands\Command;
 
 abstract class RunCLICommandInDockerPath extends RunCLICommand
 {
+    protected $outputArray = [];
+
     protected function cmd($command): string
     {
-        return system('cd '.$this->getAbsoulteDockerPath().' && '.$command);
+        return exec('cd '.$this->getAbsoulteDockerPath().' && '.$command, $this->outputArray);
     }
 
     protected function getAbsoulteDockerPath(string $relativeDockerPath = 'docker'): string
