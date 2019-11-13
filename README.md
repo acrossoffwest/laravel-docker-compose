@@ -39,5 +39,3 @@ Restart `docker-compose kill {container?} && docker-compose up -d  {container?}`
 Interactive login into docker container with bash command `docker exec -ti {container_name} bash`
 
     ldc bash {--container= : Container name, Optional} {--filter= : Filter, Optional}
-    
-`container` - optional argument, container name. If container empty then will be restart all containers.
