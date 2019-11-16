@@ -50,7 +50,7 @@ class Bash extends RunCLICommandInDockerPath
 
     protected function runDockerExec(string $containerName)
     {
-        $command = 'docker exec -i '.$containerName.' bash';
+        $command = 'docker exec -e TERM=xterm -i '.$containerName.' bash';
         $this->info('Run command: '.$command);
         $this->warn('You logged into: '.$containerName);
         $this->warn('Now you can enter your commands.');

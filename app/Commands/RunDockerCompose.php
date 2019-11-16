@@ -31,5 +31,6 @@ class RunDockerCompose extends RunCLICommandInDockerPath
     {
         $this->cmd('docker-compose up -d');
         $this->info('Done.');
+        $this->cmdInBasePath('source .env && sensible-browser $APP_URL');
     }
 }

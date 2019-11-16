@@ -7,6 +7,9 @@ use LaravelZero\Framework\Commands\Command;
 
 abstract class RunCLICommand extends Command
 {
+
+    protected $absoluteBasepath = null;
+    protected $absoluteDockerpath = null;
     /**
      * Execute the console command.
      *
@@ -22,16 +25,39 @@ abstract class RunCLICommand extends Command
         return system($command);
     }
 
+    protected function cmdInBasePath($command): string
+    {
+        return exec('cd '.$this->getAbsoulteBasepath().' && '.$command, $this->outputArray);
+    }
+
+    /**
+     * @param string $relativeDockerPath
+     * @return string
+     * @throws \Exception
+     */
     protected function getAbsoulteDockerPath(string $relativeDockerPath = 'docker'): string
     {
-        $workingDir = getcwd();
+        if (!empty($this->absoluteDockerpath)) {
+            return $this->absoluteDockerpath;
+        }
+
+        $workingDir = $this->getAbsoulteBasepath();
         $absoluteDockerPath = $workingDir.'/'.$relativeDockerPath;
 
         if (!is_dir($absoluteDockerPath)) {
             throw new \Exception('Docker directory: "'.$absoluteDockerPath.'" not found');
         }
 
-        return $absoluteDockerPath;
+        return $this->absoluteDockerpath = $absoluteDockerPath;
+    }
+
+    protected function getAbsoulteBasepath(): string
+    {
+        if (!empty($this->absoluteBasepath)) {
+            return $this->absoluteBasepath;
+        }
+
+        return $this->absoluteBasepath = getcwd();
     }
 
     /**
