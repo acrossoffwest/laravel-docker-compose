@@ -49,6 +49,6 @@ class RunDockerCompose extends RunCLICommandInDockerPath
         $dotenv = Dotenv::createImmutable($this->getAbsolutePath('./'));
         $dotenv->load();
 
-        $this->cmd('sensible-browser '.getenv('APP_URL'));
+        $this->cmd('screen -d -m sensible-browser '.getenv('APP_URL'));
     }
 }
