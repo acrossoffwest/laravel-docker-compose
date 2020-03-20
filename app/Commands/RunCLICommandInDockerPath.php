@@ -21,6 +21,6 @@ abstract class RunCLICommandInDockerPath extends RunCLICommand
             throw new \Exception('Docker directory: "'.$absolutePath.'" not found');
         }
 
-        return $absolutePath;
+        return realpath($absolutePath);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Commands;
 
+use Dotenv\Dotenv;
 use Illuminate\Console\Scheduling\Schedule;
 use LaravelZero\Framework\Commands\Command;
 
@@ -45,6 +46,9 @@ class RunDockerCompose extends RunCLICommandInDockerPath
             return;
         }
 
-        $this->cmd('source ../.env && sensible-browser $APP_URL');
+        $dotenv = Dotenv::createImmutable($this->getAbsolutePath('./'));
+        $dotenv->load();
+
+        $this->cmd('sensible-browser '.getenv('APP_URL'));
     }
 }
