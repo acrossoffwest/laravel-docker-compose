@@ -29,14 +29,11 @@ class RestartDockerComposeContainers extends RunCLICommandInDockerPath
      */
     public function handle()
     {
-        $container = $this->argument('container');
-        if (empty($container)) {
-            $this->call('kill');
-            $this->call('run');
-            return;
-        }
-        $this->cmd('docker-compose kill '.$container);
-        $this->cmd('docker-compose up -d '.$container);
+        $args = $this->arguments();
+
+        $this->call('kill', $args);
+        $this->call('run', $args);
+
         $this->info('Done.');
     }
 }

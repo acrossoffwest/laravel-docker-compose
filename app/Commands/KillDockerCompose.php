@@ -2,9 +2,6 @@
 
 namespace App\Commands;
 
-use Illuminate\Console\Scheduling\Schedule;
-use LaravelZero\Framework\Commands\Command;
-
 class KillDockerCompose extends RunCLICommandInDockerPath
 {
     /**
@@ -12,7 +9,7 @@ class KillDockerCompose extends RunCLICommandInDockerPath
      *
      * @var string
      */
-    protected $signature = 'kill';
+    protected $signature = 'kill {container?}';
 
     /**
      * The description of the command.
@@ -29,7 +26,7 @@ class KillDockerCompose extends RunCLICommandInDockerPath
      */
     public function handle()
     {
-        $this->cmd('docker-compose kill');
+        $this->cmd('docker-compose kill '.$this->argument('container'));
         $this->info('Done.');
     }
 }

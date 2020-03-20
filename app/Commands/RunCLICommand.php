@@ -2,14 +2,15 @@
 
 namespace App\Commands;
 
+use App\Commands\Contracts\RunCLICommandContract;
 use Illuminate\Console\Scheduling\Schedule;
 use LaravelZero\Framework\Commands\Command;
 
-abstract class RunCLICommand extends Command
+abstract class RunCLICommand extends Command implements RunCLICommandContract
 {
+    protected array $outputArray = [];
+    protected string $absolutePath = '';
 
-    protected $absoluteBasepath = null;
-    protected $absoluteDockerpath = null;
     /**
      * Execute the console command.
      *
@@ -18,46 +19,63 @@ abstract class RunCLICommand extends Command
      */
     abstract public function handle();
 
-    abstract protected function cmd($command): string;
-
-    protected function runCLICommand(string $command): string
-    {
-        return system($command);
-    }
-
-    protected function cmdInBasePath($command): string
-    {
-        return exec('cd '.$this->getAbsoulteBasepath().' && '.$command, $this->outputArray);
-    }
-
     /**
-     * @param string $relativeDockerPath
+     * @param array|string $command
      * @return string
      * @throws \Exception
      */
-    protected function getAbsoulteDockerPath(string $relativeDockerPath = 'docker'): string
+    public function cmd($command): string
     {
-        if (!empty($this->absoluteDockerpath)) {
-            return $this->absoluteDockerpath;
-        }
+        $commands = [
+            $this->cd()
+        ];
 
-        $workingDir = $this->getAbsoulteBasepath();
-        $absoluteDockerPath = $workingDir.'/'.$relativeDockerPath;
+        $commands = $this->mergeCommandsArray($commands, $command);
 
-        if (!is_dir($absoluteDockerPath)) {
-            throw new \Exception('Docker directory: "'.$absoluteDockerPath.'" not found');
-        }
-
-        return $this->absoluteDockerpath = $absoluteDockerPath;
+        return exec(implode(' && ', $commands), $this->outputArray);
     }
 
-    protected function getAbsoulteBasepath(): string
+    public function cd(string $path = ''): string
     {
-        if (!empty($this->absoluteBasepath)) {
-            return $this->absoluteBasepath;
+        return 'cd '.(!empty($path) ? $this->getPathWithAbsolutePath($path) : $this->getAbsolutePath());
+    }
+
+    /**
+     * @param array $commands
+     * @param mixed $command
+     * @return array
+     * @throws \Exception
+     */
+    private function mergeCommandsArray(array $commands, $command)
+    {
+        if (is_string($command)) {
+            $commands[] = $command;
+            return $commands;
+        } else if (is_array($command)) {
+            foreach ($command as $key => $item) {
+                if (is_string($key)) {
+                    $commands[] = 'echo "'.$key.'"';
+                }
+                $commands = array_merge($commands, $this->mergeCommandsArray([], $item));
+            }
+            return $commands;
         }
 
-        return $this->absoluteBasepath = getcwd();
+        throw new \Exception('Command not valid');
+    }
+
+    public function getAbsolutePath(): string
+    {
+        if (!empty($this->absolutePath)) {
+            return $this->absolutePath;
+        }
+
+        return $this->absolutePath = getcwd();
+    }
+
+    public function getPathWithAbsolutePath(string $path): string
+    {
+        return $this->getAbsolutePath().'/'.trim($path, '/');
     }
 
     /**

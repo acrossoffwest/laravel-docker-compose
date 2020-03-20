@@ -7,15 +7,20 @@ use LaravelZero\Framework\Commands\Command;
 
 abstract class RunCLICommandInDockerPath extends RunCLICommand
 {
-    protected $outputArray = [];
-
     /**
-     * @param $command
+     * @param string $relativeDockerPath
      * @return string
      * @throws \Exception
      */
-    protected function cmd($command): string
+    public function getAbsolutePath(string $relativeDockerPath = 'docker'): string
     {
-        return exec('cd '.$this->getAbsoulteDockerPath().' && '.$command, $this->outputArray);
+        $workingDir = parent::getAbsolutePath();
+        $absolutePath = $workingDir.'/'.$relativeDockerPath;
+
+        if (!is_dir($absolutePath)) {
+            throw new \Exception('Docker directory: "'.$absolutePath.'" not found');
+        }
+
+        return $absolutePath;
     }
 }

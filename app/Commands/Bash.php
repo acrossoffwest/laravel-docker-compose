@@ -2,10 +2,7 @@
 
 namespace App\Commands;
 
-use Illuminate\Console\Scheduling\Schedule;
-use LaravelZero\Framework\Commands\Command;
-
-class Bash extends RunCLICommandInDockerPath
+class Bash extends RunCLICommand
 {
     /**
      * The signature of the command.
@@ -57,10 +54,5 @@ class Bash extends RunCLICommandInDockerPath
 
         system($command);
         $this->info('Good bye.');
-    }
-
-    protected function getAbsoulteDockerPath(string $relativeDockerPath = 'docker'): string
-    {
-        return '';
     }
 }

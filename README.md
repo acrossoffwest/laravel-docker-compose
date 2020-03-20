@@ -39,3 +39,7 @@ Restart `docker-compose kill {container?} && docker-compose up -d  {container?}`
 Interactive login into docker container with bash command `docker exec -ti {container_name} bash`
 
     ldc bash {--container= : Container name, Optional} {--filter= : Filter, Optional}
+
+Initialization new laravel project with docker settings in base directory(from [./docker](https://github.com/acrossoffwest/docker-settings))
+
+    ldc init:laravel {name} {--e=* : Environment variables for Laravel project} {--ed=* : Environment variables for Docker}
