@@ -31,6 +31,7 @@ class InitLaravelInstance extends RunCLICommand
     {
         $name = $this->argument('name');
         $dir = (string) Str::of($name)->trim()->slug();
+        $domain = $dir.'.localhost';
 
         if (is_dir($this->getPathWithAbsolutePath($dir))) {
             $this->error('Directory: "./'.$dir.'" already created');
@@ -52,18 +53,33 @@ class InitLaravelInstance extends RunCLICommand
 
         $this->setEnvironmentValue(
             $this->getPathWithAbsolutePath($dir.'/.env'),
-            $this->prepareEnvVars($this->option('e'))
+            $this->prepareEnvVars($this->option('e'), [
+                'APP_URL' => 'http://'.$domain
+            ])
         );
 
-        $values = $this->prepareEnvVars($this->option('ed'));
+        $values = $this->prepareEnvVars($this->option('ed'), [], 'docker');
+        $values['DOMAINS'] = isset($values['DOMAINS']) ? $values['DOMAINS'].','.$domain : $domain;
+        $values['PMA_DOMAIN'] = $values['PMA_DOMAIN'] ?? 'pma.'.$domain;
         $values['COMPOSE_PROJECT_NAME'] = $values['COMPOSE_PROJECT_NAME'] ?? str_replace('-', '_', $dir);
+
         $this->setEnvironmentValue(
             $this->getPathWithAbsolutePath($dir.'/docker/.env'),
             $values
         );
-        $domain = $values['DOMAINS'] ?? $dir.'.localhost';
-        $domain = implode(' ', explode(',', trim($domain)));
-        $this->replaceSubstringInFile($this->getPathWithAbsolutePath($dir.'/docker/nginx/conf.d/default.conf'), 'laravel.dev', $domain);
+
+        $this->replaceSubstringInFile(
+            $this->getPathWithAbsolutePath($dir.'/docker/nginx/conf.d/default.conf'),
+            'laravel.dev',
+            $this->prepareDomainForNginx($values['DOMAINS'])
+        );
+
+        $this->info(
+            'That\'s all. You can open your project by url: '."\n".
+            'http://'.$domain."\n".
+            'Note: You have to change storage folder permissions by this command: '."\n".
+            'sudo chmod -R a+rws ./'.$dir.'/storage/'
+        );
     }
 
     private function setEnvVars($file, $values)
@@ -76,7 +92,7 @@ class InitLaravelInstance extends RunCLICommand
         $this->setEnvironmentValue($file, $values);
     }
 
-    private function prepareEnvVars(array $array = [])
+    private function prepareEnvVars(array $array = [], array $vars = [], string $default = 'laravel')
     {
         $result = [];
 
@@ -88,7 +104,12 @@ class InitLaravelInstance extends RunCLICommand
             $result[$item[0]] = $item[1];
         }
 
-        return $result;
+        return array_merge(config('default-env-variables.'.$default), $vars, $result);
+    }
+
+    private function prepareDomainForNginx(string $domain)
+    {
+        return implode(' ', explode(',', trim($domain)));
     }
 
     public function setEnvironmentValue(string $envFile, array $values)
