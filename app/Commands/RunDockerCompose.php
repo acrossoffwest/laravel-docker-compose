@@ -13,7 +13,7 @@ class RunDockerCompose extends RunCLICommandInDockerPath
      *
      * @var string
      */
-    protected $signature = 'run {container?}';
+    protected $signature = 'run {container?} {--browser : Open sensible browser}';
 
     /**
      * The description of the command.
@@ -33,6 +33,9 @@ class RunDockerCompose extends RunCLICommandInDockerPath
         $container = $this->argument('container');
         $this->cmd('docker-compose up -d '.$container);
         $this->info('Done.');
+        if (!$this->option('browser')) {
+            return;
+        }
         $this->openProjectInBrowser($container ?? '');
     }
 
