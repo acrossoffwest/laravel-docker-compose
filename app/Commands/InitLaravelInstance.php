@@ -13,7 +13,7 @@ class InitLaravelInstance extends RunCLICommand
      *
      * @var string
      */
-    protected $signature = 'init:laravel {name} {--e=* : Environment variables for Laravel project} {--ed=* : Environment variables for Docker}';
+    protected $signature = 'init:laravel {name} {--e=* : Environment variables for Laravel project} {--ed=* : Environment variables for Docker}  {--repo= : Repository URL}';
 
     /**
      * The description of the command.
@@ -29,6 +29,8 @@ class InitLaravelInstance extends RunCLICommand
      */
     public function handle()
     {
+        $repoUrl = !empty($this->option('repo')) ? $this->option('repo') : 'https://github.com/laravel/laravel.git';
+
         $name = $this->argument('name');
         $dir = (string) Str::of($name)->trim()->slug();
         $domain = $dir.'.localhost';
@@ -39,7 +41,7 @@ class InitLaravelInstance extends RunCLICommand
         }
 
         $this->cmd([
-            'git clone https://github.com/laravel/laravel.git '.$dir,
+            'git clone '.$repoUrl.' '.$dir,
             $this->cd($dir),
             'composer install',
             'cp .env.example .env',
