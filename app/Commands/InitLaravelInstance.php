@@ -32,7 +32,7 @@ class InitLaravelInstance extends RunCLICommand
         $repoUrl = !empty($this->option('repo')) ? $this->option('repo') : 'https://github.com/laravel/laravel.git';
 
         $name = $this->argument('name');
-        $dir = rtrim($this->option('dir'), '/') ?? (string) Str::of($name)->trim()->slug();
+        $dir = rtrim($this->option('dir') ?? (string) Str::of($name)->trim()->slug(), '/');
         $domain = $dir.'.localhost';
 
         if (is_dir($this->getPathWithAbsolutePath($dir))) {
