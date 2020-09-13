@@ -13,7 +13,7 @@ class InitLaravelInstance extends RunCLICommand
      *
      * @var string
      */
-    protected $signature = 'init:laravel {name} {--e=* : Environment variables for Laravel project} {--ed=* : Environment variables for Docker} {--dir= : Custom directory to clone repository} {--repo= : Repository URL} {--fork}';
+    protected $signature = 'init:laravel {name} {--e=* : Environment variables for Laravel project} {--ed=* : Environment variables for Docker} {--dir= : Custom directory to clone repository} {--repo= : Repository URL} {--fork} {--replace-docker}';
 
     /**
      * The description of the command.
@@ -47,7 +47,8 @@ class InitLaravelInstance extends RunCLICommand
             'composer install',
             'cp .env.example .env',
             'php artisan key:generate',
-            $this->dockerPathAlreadyCreated($dir) ? '' : 'git clone https://github.com/acrossoffwest/docker-settings.git docker',
+            $this->dockerPathAlreadyCreated($dir) && $this->option('replace-docker') ? 'rm -rf docker' : ' ',
+            $this->dockerPathAlreadyCreated($dir) ? ' ' : 'git clone https://github.com/acrossoffwest/docker-settings.git docker',
             'cd docker',
             'rm -rf .git',
             'cp .env.example .env',
