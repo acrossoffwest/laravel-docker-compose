@@ -13,7 +13,7 @@ class InitLaravelInstance extends RunCLICommand
      *
      * @var string
      */
-    protected $signature = 'init:laravel {name} {--e=* : Environment variables for Laravel project} {--ed=* : Environment variables for Docker} {--dir= : Custom directory to clone repository} {--repo= : Repository URL} {--fork} {--replace-docker}';
+    protected $signature = 'init:laravel {name} {--e=* : Environment variables for Laravel project} {--ed=* : Environment variables for Docker} {--dir= : Custom directory to clone repository} {--repo= : Repository URL} {--fork} {--replace-docker} {--replace-project}';
 
     /**
      * The description of the command.
@@ -34,21 +34,24 @@ class InitLaravelInstance extends RunCLICommand
         $name = $this->argument('name');
         $dir = rtrim($this->option('dir') ?? (string) Str::of($name)->trim()->slug(), '/');
         $domain = $dir.'.localhost';
-
         if (is_dir($this->getPathWithAbsolutePath($dir))) {
-            $this->error('Directory: "./'.$dir.'" already created');
-            return;
+            if ($this->option('replace-project')) {
+                $this->cmd(['rm -rf '.$this->getPathWithAbsolutePath($dir)]);
+            } else {
+                $this->error('Directory: "./'.$dir.'" already created');
+                return;
+            }
         }
 
         $this->cmd([
             'git clone '.$repoUrl.' '.$dir,
             $this->cd($dir),
-            $this->option('fork') ? 'rm -rf .git' : ' ',
+            $this->option('fork') ? 'rm -rf .git' : ' echo "Skip" ',
             'composer install',
             'cp .env.example .env',
             'php artisan key:generate',
-            $this->dockerPathAlreadyCreated($dir) && $this->option('replace-docker') ? 'rm -rf docker' : ' ',
-            $this->dockerPathAlreadyCreated($dir) ? ' ' : 'git clone https://github.com/acrossoffwest/docker-settings.git docker',
+            $this->option('replace-docker') ? 'if [ -d "docker" ]; then rm -rf docker; fi' : ' echo "Skip" ',
+            'if [ ! -d "docker" ]; then git clone https://github.com/acrossoffwest/docker-settings.git docker; fi',
             'cd docker',
             'rm -rf .git',
             'cp .env.example .env',
