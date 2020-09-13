@@ -13,7 +13,7 @@ class InitLaravelInstance extends RunCLICommand
      *
      * @var string
      */
-    protected $signature = 'init:laravel {name} {--e=* : Environment variables for Laravel project} {--ed=* : Environment variables for Docker}  {--repo= : Repository URL}';
+    protected $signature = 'init:laravel {name} {--e=* : Environment variables for Laravel project} {--ed=* : Environment variables for Docker} {--dir= : Custom directory to clone repository} {--repo= : Repository URL} {--fork}';
 
     /**
      * The description of the command.
@@ -32,7 +32,7 @@ class InitLaravelInstance extends RunCLICommand
         $repoUrl = !empty($this->option('repo')) ? $this->option('repo') : 'https://github.com/laravel/laravel.git';
 
         $name = $this->argument('name');
-        $dir = (string) Str::of($name)->trim()->slug();
+        $dir = rtrim($this->option('dir'), '/') ?? (string) Str::of($name)->trim()->slug();
         $domain = $dir.'.localhost';
 
         if (is_dir($this->getPathWithAbsolutePath($dir))) {
@@ -43,11 +43,13 @@ class InitLaravelInstance extends RunCLICommand
         $this->cmd([
             'git clone '.$repoUrl.' '.$dir,
             $this->cd($dir),
+            $this->option('fork') ? 'rm -rf .git' : ' ',
             'composer install',
             'cp .env.example .env',
             'php artisan key:generate',
-            'git clone https://github.com/acrossoffwest/docker-settings.git docker',
+            $this->dockerPathAlreadyCreated($dir) ? '' : 'git clone https://github.com/acrossoffwest/docker-settings.git docker',
             'cd docker',
+            'rm -rf .git',
             'cp .env.example .env',
             'cd nginx/conf.d',
             'cp example.default.conf default.conf'
@@ -82,6 +84,11 @@ class InitLaravelInstance extends RunCLICommand
             'Note: You have to change storage folder permissions by this command: '."\n".
             'sudo chmod -R a+rws ./'.$dir.'/storage/'
         );
+    }
+
+    private function dockerPathAlreadyCreated($dir)
+    {
+        return is_dir($this->getPathWithAbsolutePath($dir.'/docker'));
     }
 
     private function setEnvVars($file, $values)
