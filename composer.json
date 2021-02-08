@@ -45,5 +45,5 @@
     },
     "minimum-stability": "stable",
     "prefer-stable": true,
-    "bin": ["builds/ldc"]
+    "bin": ["ldc"]
 }
