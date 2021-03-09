@@ -13,7 +13,7 @@ class RunDockerCompose extends RunCLICommandInDockerPath
      *
      * @var string
      */
-    protected $signature = 'run {container?}';
+    protected $signature = 'run {container?} {--project= : Project path with docker settings}';
 
     /**
      * The description of the command.
@@ -42,13 +42,18 @@ class RunDockerCompose extends RunCLICommandInDockerPath
      */
     private function openProjectInBrowser(string $container = '')
     {
-        if (!empty($container)) {
-            return;
+        try {
+
+            if (!empty($container)) {
+                return;
+            }
+
+            $dotenv = Dotenv::createImmutable($this->getAbsolutePath('./'));
+            $dotenv->load();
+
+            $this->cmd('screen -d -m sensible-browser '.getenv('APP_URL'));
+        } catch (\Throwable $e) {
+
         }
-
-        $dotenv = Dotenv::createImmutable($this->getAbsolutePath('./'));
-        $dotenv->load();
-
-        $this->cmd('screen -d -m sensible-browser '.getenv('APP_URL'));
     }
 }

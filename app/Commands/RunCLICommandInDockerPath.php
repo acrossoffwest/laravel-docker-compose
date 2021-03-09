@@ -18,6 +18,9 @@ abstract class RunCLICommandInDockerPath extends RunCLICommand
         $absolutePath = $workingDir.'/'.$relativeDockerPath;
 
         if (!is_dir($absolutePath)) {
+            if ($relativeDockerPath === 'docker' && $project = $this->option('project')) {
+                return $this->getAbsolutePath($project.'/'.$relativeDockerPath);
+            }
             throw new \Exception('Docker directory: "'.$absolutePath.'" not found');
         }
 
