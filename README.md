@@ -11,7 +11,23 @@ Example:
 
 Run `docker-compose up -d`
 
-    ldc run
+    ldc run  {container?} {--project= : Project path with docker settings}
+
+Run all projects in sub directories
+    
+    ldc run:all
+
+Kill all projects in sub directories
+
+    ldc kill:all
+
+Restart all projects in sub directories
+
+    ldc restart:all
+
+Git pull current branch and restart all projects in sub directories
+
+    ldc git:pull:all
     
 It's like
 

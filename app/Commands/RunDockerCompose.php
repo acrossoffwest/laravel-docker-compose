@@ -31,6 +31,8 @@ class RunDockerCompose extends RunCLICommandInDockerPath
     public function handle()
     {
         $container = $this->argument('container');
+        $this->absolutePath = $this->option('project') ?? '';
+
         $this->cmd('docker-compose up -d '.$container);
         $this->info('Done.');
         $this->openProjectInBrowser($container ?? '');

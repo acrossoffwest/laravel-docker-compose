@@ -12,7 +12,7 @@ class RestartDockerComposeContainers extends RunCLICommandInDockerPath
      *
      * @var string
      */
-    protected $signature = 'restart {container?}';
+    protected $signature = 'restart {container?} {--project= : Project path with docker settings}';
 
     /**
      * The description of the command.
@@ -30,9 +30,14 @@ class RestartDockerComposeContainers extends RunCLICommandInDockerPath
     public function handle()
     {
         $args = $this->arguments();
+        $this->absolutePath = $this->option('project') ?? '';
 
-        $this->call('kill', $args);
-        $this->call('run', $args);
+        $this->call('kill', array_merge($args, [
+            '--project' =>  $this->absolutePath
+        ]));
+        $this->call('run', array_merge($args, [
+            '--project' =>  $this->absolutePath
+        ]));
 
         $this->info('Done.');
     }

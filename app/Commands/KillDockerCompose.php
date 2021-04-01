@@ -9,7 +9,7 @@ class KillDockerCompose extends RunCLICommandInDockerPath
      *
      * @var string
      */
-    protected $signature = 'kill {container?}';
+    protected $signature = 'kill {container?} {--project= : Project path with docker settings}';
 
     /**
      * The description of the command.
@@ -26,6 +26,7 @@ class KillDockerCompose extends RunCLICommandInDockerPath
      */
     public function handle()
     {
+        $this->absolutePath = $this->option('project') ?? '';
         $this->cmd('docker-compose kill '.$this->argument('container'));
         $this->info('Done.');
     }
